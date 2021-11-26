@@ -7,9 +7,12 @@
 
 import Foundation
 
-let _aExScript =
-"""
-var press = jQuery.Event("keypress");
-press.which = 111;
-$("body").trigger(press);
-"""
+struct JSBridge {
+    static func sendKeyPressed(_ key: String) -> String {
+        return """
+            var press = jQuery.Event("keypress");
+            press.which = "\(key)".charCodeAt(0);
+            $("body").trigger(press);
+        """
+    }
+}

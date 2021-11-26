@@ -11,6 +11,7 @@ import UIKit
 // MARK: - UI Utilities
 
 extension UIView {
+    @discardableResult
     func addAsSubview(to view: UIView) -> UIView {
         view.addSubview(self)
         return self
@@ -32,6 +33,18 @@ extension UIView {
             topAnchor.constraint(equalTo: superview.safeAreaLayoutGuide.topAnchor),
             trailingAnchor.constraint(equalTo: superview.trailingAnchor),
             bottomAnchor.constraint(equalTo: superview.bottomAnchor)
+        ])
+    }
+    
+    func alignHorizontalEdgesToSuperview() {
+        guard let superview = self.superview else {
+            return
+        }
+        translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            leadingAnchor.constraint(equalTo: superview.leadingAnchor),
+            trailingAnchor.constraint(equalTo: superview.trailingAnchor)
         ])
     }
 }
