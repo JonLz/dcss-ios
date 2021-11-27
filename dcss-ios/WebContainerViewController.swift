@@ -17,6 +17,7 @@ class WebContainerViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         layoutViews()
+        attachChildViewControllers()
         configureKeyboardObservations()
         
         invisibleTextField.delegate = self
@@ -54,6 +55,28 @@ class WebContainerViewController: UIViewController, UITextFieldDelegate {
 
         invisibleTextField
             .addAsSubview(to: view)
+    }
+    
+    private func attachChildViewControllers() {
+        let kcvc = KeyCommandsViewController() { [weak self] keyCommand in
+            let script = JSBridge.sendKeydownPressed(keyCommand.rawValue)
+            self?.webView.evaluateJavaScript(script)
+        }
+        let kcView = kcvc.view!
+        kcvc.willMove(toParent: self)
+        addChild(kcvc)
+        
+        kcView
+            .addAsSubview(to: view)
+        kcView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            kcView.widthAnchor.constraint(lessThanOrEqualTo: view.widthAnchor, multiplier: 0.25),
+            kcView.heightAnchor.constraint(lessThanOrEqualTo: view.heightAnchor, multiplier: 0.5),
+            kcView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            kcView.bottomAnchor.constraint(equalTo: inputButton.topAnchor)
+        ])
+        
+        kcvc.didMove(toParent: self)
     }
     
     private func configureKeyboardObservations() {
