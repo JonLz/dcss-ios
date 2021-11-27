@@ -61,9 +61,7 @@ class WebContainerViewController: UIViewController, UITextFieldDelegate {
             .addAsSubview(to: view)
         kcView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            kcView.widthAnchor.constraint(lessThanOrEqualTo: view.widthAnchor, multiplier: 0.25),
-            kcView.heightAnchor.constraint(lessThanOrEqualTo: view.heightAnchor, multiplier: 0.5),
-            kcView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            kcView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             kcView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
         
