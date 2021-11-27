@@ -8,7 +8,7 @@
 import UIKit
 import WebKit
 
-class WebContainerViewController: UIViewController, UITextFieldDelegate {
+final class WebContainerViewController: UIViewController, UITextFieldDelegate {
 
     let webView = WKWebView()
     let invisibleTextField = UITextField()
@@ -70,8 +70,7 @@ class WebContainerViewController: UIViewController, UITextFieldDelegate {
         
         kcvc.willMove(toParent: self)
         addChild(kcvc)
-        kcView
-            .addAsSubview(to: view)
+        kcView.addAsSubview(to: view)
         kcView.translatesAutoresizingMaskIntoConstraints = false
         configureKeyCommandViewConstraints(keyboardVisible: false)
         kcvc.didMove(toParent: self)
