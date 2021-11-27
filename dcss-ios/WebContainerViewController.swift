@@ -11,7 +11,6 @@ import WebKit
 class WebContainerViewController: UIViewController, UITextFieldDelegate {
 
     let webView = WKWebView()
-    let inputButton = UIButton()
     let invisibleTextField = UITextField()
     
     override func viewDidLoad() {
@@ -23,6 +22,8 @@ class WebContainerViewController: UIViewController, UITextFieldDelegate {
         invisibleTextField.delegate = self
         invisibleTextField.autocorrectionType = .no
         invisibleTextField.autocapitalizationType = .none
+        invisibleTextField.inputAssistantItem.leadingBarButtonGroups = []
+        invisibleTextField.inputAssistantItem.trailingBarButtonGroups = []
 
         let url = URL(string: "https://crawl.kelbi.org/#lobby")!
         webView.load(URLRequest(url: url))
@@ -40,28 +41,18 @@ class WebContainerViewController: UIViewController, UITextFieldDelegate {
         webView
             .addAsSubview(to: view)
             .constrainToSuperview()
-        
-        inputButton
-            .addAsSubview(to: view)
-            .alignHorizontalEdgesToSuperview()
-        NSLayoutConstraint.activate([
-            inputButton.heightAnchor.constraint(equalToConstant: 50),
-            inputButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
-        ])
-        inputButton.setTitle("Send command", for: .normal)
-        inputButton.setTitleColor(UIColor.white, for: .normal)
-        inputButton.setTitleColor(UIColor.white.withAlphaComponent(0.5), for: .highlighted)
-        inputButton.addTarget(self, action: #selector(sendCommand), for: .touchUpInside)
 
         invisibleTextField
             .addAsSubview(to: view)
     }
     
     private func attachChildViewControllers() {
-        let kcvc = KeyCommandsViewController() { [weak self] keyCommand in
+        let kcvc = KeyCommandsViewController(onKeyCommandTapped: { [weak self] keyCommand in
             let script = JSBridge.sendKeydownPressed(keyCommand.rawValue)
             self?.webView.evaluateJavaScript(script)
-        }
+        }, onKeyboardTapped: { [weak self] in
+            self?.invisibleTextField.becomeFirstResponder()
+        })
         let kcView = kcvc.view!
         kcvc.willMove(toParent: self)
         addChild(kcvc)
@@ -73,7 +64,7 @@ class WebContainerViewController: UIViewController, UITextFieldDelegate {
             kcView.widthAnchor.constraint(lessThanOrEqualTo: view.widthAnchor, multiplier: 0.25),
             kcView.heightAnchor.constraint(lessThanOrEqualTo: view.heightAnchor, multiplier: 0.5),
             kcView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            kcView.bottomAnchor.constraint(equalTo: inputButton.topAnchor)
+            kcView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
         
         kcvc.didMove(toParent: self)

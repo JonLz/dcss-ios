@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		FC08D06F275149330019119C /* JSBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC08D06E275149330019119C /* JSBridge.swift */; };
 		FC08D071275271500019119C /* KeyCommandsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC08D070275271500019119C /* KeyCommandsViewController.swift */; };
+		FC08D0762752A50B0019119C /* KeyCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC08D0752752A50B0019119C /* KeyCommand.swift */; };
+		FC08D0782752A5440019119C /* KeyCommandsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC08D0772752A5440019119C /* KeyCommandsView.swift */; };
 		FC1567F0274FE719004908AF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1567EF274FE719004908AF /* AppDelegate.swift */; };
 		FC1567F2274FE719004908AF /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1567F1274FE719004908AF /* SceneDelegate.swift */; };
 		FC1567F4274FE719004908AF /* WebContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1567F3274FE719004908AF /* WebContainerViewController.swift */; };
@@ -40,6 +42,8 @@
 /* Begin PBXFileReference section */
 		FC08D06E275149330019119C /* JSBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSBridge.swift; sourceTree = "<group>"; };
 		FC08D070275271500019119C /* KeyCommandsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyCommandsViewController.swift; sourceTree = "<group>"; };
+		FC08D0752752A50B0019119C /* KeyCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyCommand.swift; sourceTree = "<group>"; };
+		FC08D0772752A5440019119C /* KeyCommandsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyCommandsView.swift; sourceTree = "<group>"; };
 		FC1567EC274FE719004908AF /* dcss-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "dcss-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FC1567EF274FE719004908AF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FC1567F1274FE719004908AF /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -80,6 +84,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		FC08D0742752A4F90019119C /* Key Commands */ = {
+			isa = PBXGroup;
+			children = (
+				FC08D0752752A50B0019119C /* KeyCommand.swift */,
+				FC08D070275271500019119C /* KeyCommandsViewController.swift */,
+				FC08D0772752A5440019119C /* KeyCommandsView.swift */,
+			);
+			path = "Key Commands";
+			sourceTree = "<group>";
+		};
 		FC1567E3274FE719004908AF = {
 			isa = PBXGroup;
 			children = (
@@ -104,14 +118,14 @@
 			isa = PBXGroup;
 			children = (
 				FC1567EF274FE719004908AF /* AppDelegate.swift */,
-				FC1567F1274FE719004908AF /* SceneDelegate.swift */,
-				FC08D070275271500019119C /* KeyCommandsViewController.swift */,
-				FC1567F3274FE719004908AF /* WebContainerViewController.swift */,
 				FC1567F8274FE71B004908AF /* Assets.xcassets */,
-				FC1567FA274FE71B004908AF /* LaunchScreen.storyboard */,
 				FC1567FD274FE71B004908AF /* Info.plist */,
-				FC15681F274FE8D9004908AF /* Layout.swift */,
 				FC08D06E275149330019119C /* JSBridge.swift */,
+				FC08D0742752A4F90019119C /* Key Commands */,
+				FC1567FA274FE71B004908AF /* LaunchScreen.storyboard */,
+				FC15681F274FE8D9004908AF /* Layout.swift */,
+				FC1567F1274FE719004908AF /* SceneDelegate.swift */,
+				FC1567F3274FE719004908AF /* WebContainerViewController.swift */,
 			);
 			path = "dcss-ios";
 			sourceTree = "<group>";
@@ -267,7 +281,9 @@
 				FC1567F4274FE719004908AF /* WebContainerViewController.swift in Sources */,
 				FC156820274FE8D9004908AF /* Layout.swift in Sources */,
 				FC1567F0274FE719004908AF /* AppDelegate.swift in Sources */,
+				FC08D0762752A50B0019119C /* KeyCommand.swift in Sources */,
 				FC1567F2274FE719004908AF /* SceneDelegate.swift in Sources */,
+				FC08D0782752A5440019119C /* KeyCommandsView.swift in Sources */,
 				FC08D06F275149330019119C /* JSBridge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
