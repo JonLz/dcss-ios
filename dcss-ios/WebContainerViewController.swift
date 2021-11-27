@@ -17,9 +17,12 @@ class WebContainerViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         layoutViews()
+        configureKeyboardObservations()
         
         invisibleTextField.delegate = self
-        
+        invisibleTextField.autocorrectionType = .no
+        invisibleTextField.autocapitalizationType = .none
+
         let url = URL(string: "https://crawl.kelbi.org/#lobby")!
         webView.load(URLRequest(url: url))
     }
@@ -30,10 +33,6 @@ class WebContainerViewController: UIViewController, UITextFieldDelegate {
     
     @objc func sendCommand() {
         invisibleTextField.becomeFirstResponder()
-        
-        let webViewContentOffset = webView.scrollView.contentOffset.y
-        let offset = CGPoint(x: 0, y: webViewContentOffset + 100)
-        webView.scrollView.setContentOffset(offset, animated: true)
     }
     
     private func layoutViews() {
@@ -55,7 +54,44 @@ class WebContainerViewController: UIViewController, UITextFieldDelegate {
 
         invisibleTextField
             .addAsSubview(to: view)
+    }
+    
+    private func configureKeyboardObservations() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
         
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+    }
+    
+    @objc func keyboardWillShow(_ notification: NSNotification) {
+        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
+            let keyboardRectangle = keyboardFrame.cgRectValue
+            let keyboardHeight = keyboardRectangle.height
+            setWebviewContentInsets(keyboardVisible: true, keyboardHeight: keyboardHeight)
+        }
+    }
+    
+    @objc func keyboardWillHide(_ notification: NSNotification) {
+        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
+            let keyboardRectangle = keyboardFrame.cgRectValue
+            let keyboardHeight = keyboardRectangle.height
+            setWebviewContentInsets(keyboardVisible: false, keyboardHeight: keyboardHeight)
+        }
+    }
+    
+    @objc func setWebviewContentInsets(keyboardVisible: Bool, keyboardHeight: CGFloat) {
+        let insets = keyboardVisible ? UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight, right: 0) : UIEdgeInsets.zero
+        webView.scrollView.contentInset = insets
+        webView.scrollView.scrollIndicatorInsets = insets
     }
 }
 
@@ -66,11 +102,5 @@ extension WebContainerViewController {
         let script = JSBridge.sendKeyPressed(string)
         webView.evaluateJavaScript(script)
         return false
-    }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        let webViewContentOffset = webView.scrollView.contentOffset.y
-        let offset = CGPoint(x: 0, y: webViewContentOffset - 100)
-        webView.scrollView.setContentOffset(offset, animated: true)
     }
 }
