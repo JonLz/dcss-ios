@@ -25,6 +25,9 @@ class WebContainerViewController: UIViewController, UITextFieldDelegate {
         invisibleTextField.inputAssistantItem.leadingBarButtonGroups = []
         invisibleTextField.inputAssistantItem.trailingBarButtonGroups = []
 
+        webView.scrollView.showsVerticalScrollIndicator = false
+        webView.scrollView.showsHorizontalScrollIndicator = false
+        
         let url = URL(string: "https://crawl.kelbi.org/#lobby")!
         webView.load(URLRequest(url: url))
     }
