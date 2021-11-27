@@ -15,4 +15,16 @@ struct JSBridge {
             $("body").trigger(press);
         """
     }
+    
+    static func sendControlKeyPressed(with key: String) -> String {
+        // uppercasing the key as all control commands check uppercased keys or numbers
+        // originalEvent must be set to avoid a js error due to how it checks jQuery
+        return """
+            var press = jQuery.Event("keydown");
+            press.which = "\(key)".toUpperCase().charCodeAt(0);
+            press.ctrlKey = true;
+            press.originalEvent = {};
+            $('body').trigger(press);
+        """
+    }
 }
