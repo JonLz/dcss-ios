@@ -14,6 +14,10 @@ protocol KeyCommand {
 enum KeypressCommand: String, CaseIterable, KeyCommand {
     case o = "o" // auto-explore
     case five = "5" // rest
+    case u = "u" // north-east
+    case n = "n" // south-east
+    case b = "b" // south-west
+    case y = "y" // north-west
     
     var executableJavascript: String {
         JSBridge.sendKeyPressed(rawValue)
@@ -29,6 +33,14 @@ enum KeypressCommand: String, CaseIterable, KeyCommand {
             return "hand.raised"
         case .o:
             return "arrow.rectanglepath"
+        case .u:
+            return "arrow.up.right"
+        case .n:
+            return "arrow.down.right"
+        case .b:
+            return "arrow.down.left"
+        case .y:
+            return "arrow.up.left"
         }
     }
 }
@@ -37,12 +49,12 @@ typealias JavascriptKeycode = Int
 
 enum KeydownCommand: JavascriptKeycode, CaseIterable, KeyCommand {
     case tab = 9 // auto-attack
-    
+    case escape = 27
     case leftArrow = 37
     case upArrow = 38
     case rightArrow = 39
     case downArrow = 40
-    case escape = 27
+    
     
     var executableJavascript: String {
         JSBridge.sendKeydownPressed(rawValue)

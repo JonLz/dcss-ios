@@ -84,17 +84,19 @@ final class WebContainerViewController: UIViewController, UITextFieldDelegate {
         NSLayoutConstraint.deactivate(keyCommandViewConstraints)
         defer { NSLayoutConstraint.activate(keyCommandViewConstraints) }
 
+        let height = kcView.sizeThatFits(UIView.layoutFittingCompressedSize).height
+        
         if keyboardVisible {
             keyCommandViewConstraints = [
                 kcView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
                 kcView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -keyboardHeight),
-                kcView.heightAnchor.constraint(equalToConstant: 32)
+                kcView.heightAnchor.constraint(equalToConstant: height)
             ]
         } else {
             keyCommandViewConstraints = [
                 kcView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
                 kcView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-                kcView.heightAnchor.constraint(equalToConstant: 32)
+                kcView.heightAnchor.constraint(equalToConstant: height)
             ]
         }
     }
