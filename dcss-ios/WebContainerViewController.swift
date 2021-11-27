@@ -12,6 +12,9 @@ class WebContainerViewController: UIViewController, UITextFieldDelegate {
 
     let webView = WKWebView()
     let invisibleTextField = UITextField()
+    var keyCommandView: UIView?
+
+    private var keyCommandViewConstraints = [NSLayoutConstraint]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,7 +38,7 @@ class WebContainerViewController: UIViewController, UITextFieldDelegate {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
     }
-    
+
     @objc func sendCommand() {
         invisibleTextField.becomeFirstResponder()
     }
@@ -54,21 +57,48 @@ class WebContainerViewController: UIViewController, UITextFieldDelegate {
             let script = JSBridge.sendKeydownPressed(keyCommand.rawValue)
             self?.webView.evaluateJavaScript(script)
         }, onKeyboardTapped: { [weak self] in
-            self?.invisibleTextField.becomeFirstResponder()
+            guard let self = self else {
+                return
+            }
+            if self.invisibleTextField.isFirstResponder {
+                self.invisibleTextField.resignFirstResponder()
+            } else {
+                self.invisibleTextField.becomeFirstResponder()
+            }
         })
         let kcView = kcvc.view!
+        keyCommandView = kcView
+        
         kcvc.willMove(toParent: self)
         addChild(kcvc)
-        
         kcView
             .addAsSubview(to: view)
         kcView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            kcView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            kcView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
-        ])
-        
+        configureKeyCommandViewConstraints(keyboardVisible: false)
         kcvc.didMove(toParent: self)
+    }
+    
+    private func configureKeyCommandViewConstraints(keyboardVisible: Bool, keyboardHeight: CGFloat = 0) {
+        guard let kcView = keyCommandView else {
+            return
+        }
+        
+        NSLayoutConstraint.deactivate(keyCommandViewConstraints)
+        defer { NSLayoutConstraint.activate(keyCommandViewConstraints) }
+
+        if keyboardVisible {
+            keyCommandViewConstraints = [
+                kcView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+                kcView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -keyboardHeight),
+                kcView.heightAnchor.constraint(equalToConstant: 32)
+            ]
+        } else {
+            keyCommandViewConstraints = [
+                kcView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+                kcView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+                kcView.heightAnchor.constraint(equalToConstant: 32)
+            ]
+        }
     }
     
     private func configureKeyboardObservations() {
@@ -88,22 +118,45 @@ class WebContainerViewController: UIViewController, UITextFieldDelegate {
     }
     
     @objc func keyboardWillShow(_ notification: NSNotification) {
-        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-            let keyboardRectangle = keyboardFrame.cgRectValue
-            let keyboardHeight = keyboardRectangle.height
-            setWebviewContentInsets(keyboardVisible: true, keyboardHeight: keyboardHeight)
+        guard
+            let curve = notification.keyboardAnimationCurve,
+            let duration = notification.keyboardAnimationDuration,
+            let keyboardHeight = notification.keyboardHeight else {
+                return
+            }
+
+        let animator = UIViewPropertyAnimator(
+            duration: duration,
+            curve: curve
+        ) {
+            self.setWebviewContentInsets(keyboardVisible: true, keyboardHeight: keyboardHeight)
+            self.configureKeyCommandViewConstraints(keyboardVisible: true, keyboardHeight: keyboardHeight)
+            self.view?.layoutIfNeeded()
         }
+        
+        animator.startAnimation()
     }
     
     @objc func keyboardWillHide(_ notification: NSNotification) {
-        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
-            let keyboardRectangle = keyboardFrame.cgRectValue
-            let keyboardHeight = keyboardRectangle.height
-            setWebviewContentInsets(keyboardVisible: false, keyboardHeight: keyboardHeight)
+        guard
+            let curve = notification.keyboardAnimationCurve,
+            let duration = notification.keyboardAnimationDuration else {
+                return
+            }
+
+        let animator = UIViewPropertyAnimator(
+            duration: duration,
+            curve: curve
+        ) {
+            self.setWebviewContentInsets(keyboardVisible: false)
+            self.configureKeyCommandViewConstraints(keyboardVisible: false)
+            self.view?.layoutIfNeeded()
         }
+        
+        animator.startAnimation()
     }
     
-    @objc func setWebviewContentInsets(keyboardVisible: Bool, keyboardHeight: CGFloat) {
+    @objc func setWebviewContentInsets(keyboardVisible: Bool, keyboardHeight: CGFloat = 0) {
         let insets = keyboardVisible ? UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight, right: 0) : UIEdgeInsets.zero
         webView.scrollView.contentInset = insets
         webView.scrollView.scrollIndicatorInsets = insets
@@ -117,5 +170,26 @@ extension WebContainerViewController {
         let script = JSBridge.sendKeyPressed(string)
         webView.evaluateJavaScript(script)
         return false
+    }
+}
+
+private extension NSNotification {
+    var keyboardAnimationCurve: UIView.AnimationCurve? {
+        let curveKey = UIResponder.keyboardAnimationCurveUserInfoKey
+        guard let curveValue = userInfo?[curveKey] as? Int else {
+            return nil
+        }
+        return UIView.AnimationCurve(rawValue: curveValue)
+    }
+    
+    var keyboardAnimationDuration: Double? {
+        let durationKey = UIResponder.keyboardAnimationDurationUserInfoKey
+        return userInfo?[durationKey] as? Double
+    }
+    
+    var keyboardHeight: CGFloat? {
+        let frameKey = UIResponder.keyboardFrameEndUserInfoKey
+        let keyboardFrameValue = userInfo?[frameKey] as? NSValue
+        return keyboardFrameValue?.cgRectValue.height
     }
 }
