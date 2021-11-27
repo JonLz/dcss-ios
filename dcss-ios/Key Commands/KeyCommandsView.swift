@@ -16,7 +16,7 @@ struct KeyCommandsView: View {
     
     var body: some View {
         HStack(spacing: 8) {
-            ForEach(KeyCommand.allCases, id: \.rawValue) { keyCommand in
+            ForEach(defaultKeyCommands, id: \.id) { keyCommand in
                 Button(action: {
                     if isLongPressing {
                         isLongPressing = false
@@ -43,4 +43,15 @@ struct KeyCommandsView: View {
             })
         }.padding(4)
     }
+    
+    private let defaultKeyCommands: [KeyCommand] = [
+        KeypressCommand.o,
+        KeydownCommand.tab,
+        KeypressCommand.five,
+        KeydownCommand.leftArrow,
+        KeydownCommand.upArrow,
+        KeydownCommand.rightArrow,
+        KeydownCommand.downArrow,
+        KeydownCommand.escape,
+    ]
 }

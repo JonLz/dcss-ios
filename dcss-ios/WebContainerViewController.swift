@@ -54,8 +54,7 @@ class WebContainerViewController: UIViewController, UITextFieldDelegate {
     
     private func attachChildViewControllers() {
         let kcvc = KeyCommandsViewController(onKeyCommandTapped: { [weak self] keyCommand in
-            let script = JSBridge.sendKeydownPressed(keyCommand.rawValue)
-            self?.webView.evaluateJavaScript(script)
+            self?.webView.evaluateJavaScript(keyCommand.executableJavascript)
         }, onKeyboardTapped: { [weak self] in
             guard let self = self else {
                 return
