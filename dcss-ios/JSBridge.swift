@@ -37,4 +37,21 @@ struct JSBridge {
             $('body').trigger(press);
         """
     }
+    
+    static func enterTextInFindAndPressEnter(_ text: String) -> String {
+        """
+            $(".game_message > input[class='text']").val("\(text)");
+            var e = jQuery.Event("keydown");
+            e.which = 13;
+            $(".game_message > input[class='text']").trigger(e);
+        """
+    }
+    
+    static func cancelFind() -> String {
+        """
+            var e = jQuery.Event("keydown");
+            e.which = 27;
+            $(".game_message > input[class='text']").trigger(e);
+        """
+    }
 }

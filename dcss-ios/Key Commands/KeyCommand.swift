@@ -55,7 +55,6 @@ enum KeydownCommand: JavascriptKeycode, CaseIterable, KeyCommand {
     case rightArrow = 39
     case downArrow = 40
     
-    
     var executableJavascript: String {
         JSBridge.sendKeydownPressed(rawValue)
     }
@@ -80,4 +79,33 @@ enum KeydownCommand: JavascriptKeycode, CaseIterable, KeyCommand {
             return "arrow.down"
         }
     }
+}
+
+enum KeypressWithControlCommand: String, CaseIterable, KeyCommand {
+    case f = "f" // find
+
+    var executableJavascript: String {
+        JSBridge.sendControlKeyPressed(with: rawValue)
+    }
+    
+    var id: String {
+        "KeypressWithControlCommand_\(rawValue)"
+    }
+
+    var symbolName: String {
+        switch self {
+        case .f:
+            return "doc.text.magnifyingglass"
+        }
+    }
+}
+
+struct ReturnKeypressCommand: KeyCommand {
+    let id = "ReturnKeyPressCommand"
+    let executableJavascript = """
+        var press = jQuery.Event("keypress");
+        press.which = 13;
+        $("body").trigger(press);
+    """
+    let symbolName: String = "return"
 }

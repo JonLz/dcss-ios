@@ -86,13 +86,12 @@ struct KeyCommandsView: View {
     ]
     
     private let secondaryKeyCommands: [KeyCommand] = [
-        KeypressCommand.o,
-        KeydownCommand.tab,
-        KeypressCommand.five,
         KeypressCommand.y,
         KeypressCommand.u,
         KeypressCommand.b,
         KeypressCommand.n,
+        KeypressWithControlCommand.f,
+        ReturnKeypressCommand(),
         KeydownCommand.escape
     ]
 }

@@ -14,6 +14,10 @@ final class WebContainerViewController: UIViewController, UITextFieldDelegate {
     let invisibleTextField = UITextField()
     var keyCommandView: UIView?
 
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        .lightContent
+    }
+    
     private var keyCommandViewConstraints = [NSLayoutConstraint]()
     
     private var defaultScrollViewBottomContentInset: CGFloat {
@@ -61,6 +65,25 @@ final class WebContainerViewController: UIViewController, UITextFieldDelegate {
     private func attachChildViewControllers() {
         let kcvc = KeyCommandsViewController(onKeyCommandTapped: { [weak self] keyCommand in
             self?.webView.evaluateJavaScript(keyCommand.executableJavascript)
+            
+            // it's nicer to automatically enter text and press enter to avoid auto magnification problems
+            if keyCommand.id == KeypressWithControlCommand.f.id {
+                let alertController = UIAlertController(title: "Search for what?", message: nil, preferredStyle: .alert)
+                alertController.addTextField()
+                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { _ in
+                    let script = JSBridge.cancelFind()
+                    self?.webView.evaluateJavaScript(script)
+                }
+                let okAction = UIAlertAction(title: "Search", style: .default) { [weak alertController] _ in
+                    if let text = alertController?.textFields?.first?.text {
+                        let script = JSBridge.enterTextInFindAndPressEnter(text)
+                        self?.webView.evaluateJavaScript(script)
+                    }
+                }
+                alertController.addAction(cancelAction)
+                alertController.addAction(okAction)
+                self?.present(alertController, animated: true)
+            }
         }, onKeyboardTapped: { [weak self] in
             guard let self = self else {
                 return
