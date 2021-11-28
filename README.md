@@ -15,6 +15,7 @@ The webtiles UI has a few problems:
 * Launch the app
 * Login to your webtiles account
 * Use the built in bar at the bottom to send key commands to the game
+* Long press any command to repeatedly send it to the game
 * Swipe up on the bar to access a secondary set of commands
 
 ## Built in commands
