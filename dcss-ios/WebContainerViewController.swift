@@ -16,12 +16,13 @@ final class WebContainerViewController: UIViewController, UITextFieldDelegate {
 
     private var keyCommandViewConstraints = [NSLayoutConstraint]()
     
+    private var defaultScrollViewBottomContentInset: CGFloat {
+        KeyCommandsView.LayoutConstants.height
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        layoutViews()
-        attachChildViewControllers()
-        configureKeyboardObservations()
-        
+
         invisibleTextField.delegate = self
         invisibleTextField.autocorrectionType = .no
         invisibleTextField.autocapitalizationType = .none
@@ -30,7 +31,12 @@ final class WebContainerViewController: UIViewController, UITextFieldDelegate {
 
         webView.scrollView.showsVerticalScrollIndicator = false
         webView.scrollView.showsHorizontalScrollIndicator = false
+        webView.scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: defaultScrollViewBottomContentInset, right: 0)
         
+        layoutViews()
+        attachChildViewControllers()
+        configureKeyboardObservations()
+
         let url = URL(string: "https://crawl.kelbi.org/#lobby")!
         webView.load(URLRequest(url: url))
     }
@@ -84,19 +90,19 @@ final class WebContainerViewController: UIViewController, UITextFieldDelegate {
         NSLayoutConstraint.deactivate(keyCommandViewConstraints)
         defer { NSLayoutConstraint.activate(keyCommandViewConstraints) }
 
-        let height = kcView.sizeThatFits(UIView.layoutFittingCompressedSize).height
-        
         if keyboardVisible {
             keyCommandViewConstraints = [
-                kcView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+                kcView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                kcView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
                 kcView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -keyboardHeight),
-                kcView.heightAnchor.constraint(equalToConstant: height)
+                kcView.heightAnchor.constraint(equalToConstant: KeyCommandsView.LayoutConstants.height)
             ]
         } else {
             keyCommandViewConstraints = [
-                kcView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-                kcView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-                kcView.heightAnchor.constraint(equalToConstant: height)
+                kcView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                kcView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                kcView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -KeyCommandsView.LayoutConstants.height),
+                kcView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
             ]
         }
     }
@@ -157,7 +163,8 @@ final class WebContainerViewController: UIViewController, UITextFieldDelegate {
     }
     
     @objc func setWebviewContentInsets(keyboardVisible: Bool, keyboardHeight: CGFloat = 0) {
-        let insets = keyboardVisible ? UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight, right: 0) : UIEdgeInsets.zero
+        let bottomInset = keyboardVisible ? defaultScrollViewBottomContentInset + keyboardHeight : defaultScrollViewBottomContentInset
+        let insets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
         webView.scrollView.contentInset = insets
         webView.scrollView.scrollIndicatorInsets = insets
     }

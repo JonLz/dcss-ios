@@ -8,6 +8,11 @@
 import SwiftUI
 
 struct KeyCommandsView: View {
+    enum LayoutConstants {
+        static let padding: CGFloat  = 4
+        static let iconSize: CGFloat = 32
+        static let height: CGFloat = padding * 2 + iconSize
+    }
     
     let onKeyCommandTapped: (KeyCommand) -> Void
     let onKeyboardTapped: () -> Void
@@ -17,9 +22,9 @@ struct KeyCommandsView: View {
     @State private var isExpanded: Bool = false
     
     var body: some View {
-        ZStack(alignment: isExpanded ? .bottom : .top) {
+        ZStack(alignment: .top) {
             VStack {
-                HStack(spacing: 8) {
+                HStack(spacing: LayoutConstants.padding * 2) {
                     ForEach(keyCommands, id: \.id) { keyCommand in
                         Button(action: {
                             if isLongPressing {
@@ -30,9 +35,9 @@ struct KeyCommandsView: View {
                             }
                         }, label: {
                             Image(systemName: keyCommand.symbolName)
-                                .frame(width: 24, height: 24)
+                                .frame(width: LayoutConstants.iconSize, height: LayoutConstants.iconSize)
                         })
-                            .simultaneousGesture(LongPressGesture(minimumDuration: 0.2, maximumDistance: 24).onEnded { _ in
+                            .simultaneousGesture(LongPressGesture(minimumDuration: 0.2, maximumDistance: LayoutConstants.iconSize).onEnded { _ in
                                 isLongPressing = true
                                 longPressTimer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true, block: { _ in
                                     onKeyCommandTapped(keyCommand)
@@ -43,19 +48,26 @@ struct KeyCommandsView: View {
                         onKeyboardTapped()
                     }, label: {
                         Image(systemName: "keyboard")
-                            .frame(width: 24, height: 24)
+                            .frame(width: LayoutConstants.iconSize, height: LayoutConstants.iconSize)
                     })
                 }
-            }.padding(4)
-            GrabberView() { swipeDirection in
-                switch swipeDirection {
-                case .up:
-                    isExpanded = true
-                case .down:
-                    isExpanded = false
-                }
+                Spacer()
+            }
+            Capsule()
+                .fill(Color.gray)
+                .frame(width: LayoutConstants.iconSize, height: 6)
+        }.swipeRecognizing { swipeDirection in
+            switch swipeDirection {
+            case .up:
+                isExpanded.toggle()
+            case .down:
+                // no-op
+                break
             }
         }
+        .frame(maxWidth: .infinity)
+        .background(Color.black)
+        
     }
     
     private var keyCommands: [KeyCommand] {
@@ -85,7 +97,13 @@ struct KeyCommandsView: View {
     ]
 }
 
-private struct GrabberView: View {
+private extension View {
+    func swipeRecognizing(onSwipe: @escaping (SwipeRecognizing.SwipeDirection) -> Void) -> some View {
+        modifier(SwipeRecognizing(onSwipe: onSwipe))
+    }
+}
+
+private struct SwipeRecognizing: ViewModifier {
     enum SwipeDirection {
         case down
         case up
@@ -93,10 +111,8 @@ private struct GrabberView: View {
     
     let onSwipe: (SwipeDirection) -> Void
     
-    var body: some View {
-        Capsule()
-            .fill(Color.gray)
-            .frame(width: 24, height: 6)
+    func body(content: Content) -> some View {
+        content
             .gesture(DragGesture(minimumDistance: 0, coordinateSpace: .local)
                         .onEnded({ value in
                 if value.translation.width < 0 && value.translation.height > -30 && value.translation.height < 30 {

@@ -13,6 +13,7 @@ final class KeyCommandsViewController: UIHostingController<KeyCommandsView> {
     init(onKeyCommandTapped: @escaping (KeyCommand) -> Void, onKeyboardTapped: @escaping () -> Void) {
         let view = KeyCommandsView(onKeyCommandTapped: onKeyCommandTapped, onKeyboardTapped: onKeyboardTapped)
         super.init(rootView: view)
+        self.view.backgroundColor = UIColor.black
         ignoreKeyboard()
     }
     
