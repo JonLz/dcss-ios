@@ -9,15 +9,17 @@ import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
+    var appCoordinator: AppCoordinator?
     var window: UIWindow?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         let window = UIWindow(windowScene: windowScene)
-        let webContainerVC = WebContainerViewController()
-        window.rootViewController = webContainerVC
+        let appCoordinator = AppCoordinator()
+        window.rootViewController = appCoordinator.rootViewController
         window.makeKeyAndVisible()
+        self.appCoordinator = appCoordinator
         self.window = window
     }
 

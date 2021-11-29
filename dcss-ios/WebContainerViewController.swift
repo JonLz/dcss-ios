@@ -10,18 +10,30 @@ import WebKit
 
 final class WebContainerViewController: UIViewController, UITextFieldDelegate {
 
-    let webView = WKWebView()
-    let invisibleTextField = UITextField()
-    var keyCommandView: UIView?
-
+    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         .lightContent
     }
+
+    private let serverURL: URL
+    
+    private let webView = WKWebView()
+    private let invisibleTextField = UITextField()
+    private var keyCommandView: UIView?
     
     private var keyCommandViewConstraints = [NSLayoutConstraint]()
     
     private var defaultScrollViewBottomContentInset: CGFloat {
         KeyCommandsView.LayoutConstants.height
+    }
+
+    init(serverURL: URL) {
+        self.serverURL = serverURL
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override func viewDidLoad() {
@@ -41,8 +53,7 @@ final class WebContainerViewController: UIViewController, UITextFieldDelegate {
         attachChildViewControllers()
         configureKeyboardObservations()
 
-        let url = URL(string: "https://crawl.kelbi.org/#lobby")!
-        webView.load(URLRequest(url: url))
+        webView.load(URLRequest(url: serverURL))
     }
     
     override func viewDidAppear(_ animated: Bool) {
