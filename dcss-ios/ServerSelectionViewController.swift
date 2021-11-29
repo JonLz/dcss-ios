@@ -42,20 +42,22 @@ struct ServerSelectionView: View {
     weak var delegate: ServerSelectionDelegate?
     
     var body: some View {
-        List {
-            ForEach(WebTilesServer.all, id: \.url) { server in
-                if #available(iOS 15.0, *) {
-                    text(server: server)
-                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                            let vm = DefaultServerViewModel(server: server)
-                            DefaultServerView(viewModel: vm)
-                        }
-                } else {
-                    text(server: server)
+        NavigationView {
+            List {
+                ForEach(WebTilesServer.all, id: \.url) { server in
+                    if #available(iOS 15.0, *) {
+                        text(server: server)
+                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                let vm = DefaultServerViewModel(server: server)
+                                DefaultServerView(viewModel: vm)
+                            }
+                    } else {
+                        text(server: server)
+                    }
                 }
             }
+            .navigationTitle("Select server")
         }
-        .navigationTitle("Select server")
     }
     
     private func text(server: WebTilesServer) -> some View {
@@ -96,7 +98,7 @@ struct DefaultServerView: View {
     @ObservedObject var viewModel: DefaultServerViewModel
 
     var body: some View {
-        Button(viewModel.isDefault ? "Default" : "Make default") {
+        Button(viewModel.isDefault ? "Remove default" : "Make default") {
             viewModel.toggleDefault()
         }
     }
