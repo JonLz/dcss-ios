@@ -13,6 +13,7 @@
 		FC08D0782752A5440019119C /* KeyCommandsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC08D0772752A5440019119C /* KeyCommandsView.swift */; };
 		FC08D07B275422200019119C /* ServerSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC08D07A275422200019119C /* ServerSelectionViewController.swift */; };
 		FC08D07D275447370019119C /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC08D07C275447370019119C /* AppCoordinator.swift */; };
+		FC08D07F275523780019119C /* UserDefaults+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC08D07E275523780019119C /* UserDefaults+Extensions.swift */; };
 		FC1567F0274FE719004908AF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1567EF274FE719004908AF /* AppDelegate.swift */; };
 		FC1567F2274FE719004908AF /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1567F1274FE719004908AF /* SceneDelegate.swift */; };
 		FC1567F4274FE719004908AF /* WebContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1567F3274FE719004908AF /* WebContainerViewController.swift */; };
@@ -48,6 +49,7 @@
 		FC08D0772752A5440019119C /* KeyCommandsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyCommandsView.swift; sourceTree = "<group>"; };
 		FC08D07A275422200019119C /* ServerSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerSelectionViewController.swift; sourceTree = "<group>"; };
 		FC08D07C275447370019119C /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
+		FC08D07E275523780019119C /* UserDefaults+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+Extensions.swift"; sourceTree = "<group>"; };
 		FC1567EC274FE719004908AF /* dcss-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "dcss-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FC1567EF274FE719004908AF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FC1567F1274FE719004908AF /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 				FC15681F274FE8D9004908AF /* Layout.swift */,
 				FC1567F1274FE719004908AF /* SceneDelegate.swift */,
 				FC08D07A275422200019119C /* ServerSelectionViewController.swift */,
+				FC08D07E275523780019119C /* UserDefaults+Extensions.swift */,
 				FC1567F3274FE719004908AF /* WebContainerViewController.swift */,
 			);
 			path = "dcss-ios";
@@ -291,6 +294,7 @@
 				FC08D0762752A50B0019119C /* KeyCommand.swift in Sources */,
 				FC1567F2274FE719004908AF /* SceneDelegate.swift in Sources */,
 				FC08D0782752A5440019119C /* KeyCommandsView.swift in Sources */,
+				FC08D07F275523780019119C /* UserDefaults+Extensions.swift in Sources */,
 				FC08D07B275422200019119C /* ServerSelectionViewController.swift in Sources */,
 				FC08D06F275149330019119C /* JSBridge.swift in Sources */,
 			);

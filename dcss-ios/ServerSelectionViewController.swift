@@ -5,6 +5,7 @@
 //  Created by Jonathan Lazar on 11/28/21.
 //
 
+import Combine
 import SwiftUI
 
 struct WebTilesServer {
@@ -25,7 +26,7 @@ protocol ServerSelectionDelegate: AnyObject {
 }
 
 final class ServerSelectionViewController: UIHostingController<ServerSelectionView> {
-
+    
     init(delegate: ServerSelectionDelegate) {
         let view = ServerSelectionView(delegate: delegate)
         super.init(rootView: view)
@@ -37,18 +38,66 @@ final class ServerSelectionViewController: UIHostingController<ServerSelectionVi
 }
 
 struct ServerSelectionView: View {
-
+    
     weak var delegate: ServerSelectionDelegate?
     
     var body: some View {
         List {
             ForEach(WebTilesServer.all, id: \.url) { server in
-                Text("\(server.name) - \(server.location)")
-                    .onTapGesture {
-                        delegate?.didSelectServer(serverURL: server.url)
-                    }
+                if #available(iOS 15.0, *) {
+                    text(server: server)
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            let vm = DefaultServerViewModel(server: server)
+                            DefaultServerView(viewModel: vm)
+                        }
+                } else {
+                    text(server: server)
+                }
             }
         }
         .navigationTitle("Select server")
+    }
+    
+    private func text(server: WebTilesServer) -> some View {
+        Text("\(server.name) - \(server.location)")
+            .onTapGesture {
+                delegate?.didSelectServer(serverURL: server.url)
+            }
+    }
+}
+
+class DefaultServerViewModel: ObservableObject {
+    
+    @Published var isDefault: Bool = false
+    
+    private let server: WebTilesServer
+    private var cancellable: Cancellable?
+    
+    init(server: WebTilesServer) {
+        self.server = server
+        cancellable = UserDefaults.standard
+            .publisher(for: \.defaultServerURL)
+            .sink { defaultServerURL in
+                self.isDefault = defaultServerURL == server.url
+            }
+    }
+
+    func toggleDefault() {
+        let userDefaults = UserDefaults.standard
+        if isDefault {
+            userDefaults.defaultServerURL = nil
+        } else {
+            userDefaults.defaultServerURL = server.url
+        }
+    }
+}
+struct DefaultServerView: View {
+    
+    @ObservedObject var viewModel: DefaultServerViewModel
+
+    var body: some View {
+        Button(viewModel.isDefault ? "Default" : "Make default") {
+            viewModel.toggleDefault()
+        }
     }
 }

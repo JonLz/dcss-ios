@@ -11,7 +11,11 @@ import UIKit
 final class AppCoordinator: ServerSelectionDelegate {
     
     private(set) lazy var rootViewController: UIViewController = {
-        ServerSelectionViewController(delegate: self)
+        if let url = UserDefaults.standard.defaultServerURL {
+            return WebContainerViewController(serverURL: url)
+        } else {
+            return ServerSelectionViewController(delegate: self)
+        }
     }()
 }
 
