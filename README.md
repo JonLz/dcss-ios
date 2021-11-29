@@ -13,6 +13,7 @@ The webtiles UI has a few problems:
 ## How to play
 
 * Launch the app
+* Select your webtiles server (swipe on a row on iOS 15 to set it as default)
 * Login to your webtiles account
 * Use the built in bar at the bottom to send key commands to the game
 * Long press any command to repeatedly send it to the game
